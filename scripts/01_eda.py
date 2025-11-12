@@ -4,8 +4,15 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler, LabelEncoder
+from pathlib import Path
 
-df = pd.read_csv('../data/raw/StudentPerformanceFactors.csv')
+# Get paths relative to this script
+SCRIPT_DIR = Path(__file__).parent
+PROJECT_ROOT = SCRIPT_DIR.parent
+DATA_RAW_PATH = PROJECT_ROOT / "data" / "raw" / "StudentPerformanceFactors.csv"
+DATA_CLEANED_PATH = PROJECT_ROOT / "data" / "cleaned" / "student_performance_cleaned.csv"
+
+df = pd.read_csv(DATA_RAW_PATH)
 
 df.head()  # pierwszy rzut oka
 df.info()  # typy danych, liczba nie-null
@@ -39,13 +46,18 @@ binary_maps = {
 for col, mapping in binary_maps.items():
 	df[col] = df[col].map(mapping)
 
-# Label Encoding dla reszty
-label_enc = LabelEncoder()
-for col in cat_cols:
+# Label Encoding dla reszty (wykluczamy kolumny już przetworzone przez mapowanie binarne)
+# Exclude columns that were already binary encoded
+binary_cols = set(binary_maps.keys())
+remaining_cat_cols = [col for col in cat_cols if col not in binary_cols]
+
+# Create a new LabelEncoder for each column to avoid state overwriting
+for col in remaining_cat_cols:
+	label_enc = LabelEncoder()
 	df[col] = label_enc.fit_transform(df[col])
 
 print(df.head())
 print(df["Gender"])
 print(df["Motivation_Level"])
 
-df.to_csv("../data/cleaned/student_performance_cleaned.csv", index=False)
+df.to_csv(DATA_CLEANED_PATH, index=False)

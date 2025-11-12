@@ -2,8 +2,15 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
+from pathlib import Path
 
-df = pd.read_csv("../data/cleaned/student_performance_cleaned.csv")
+# Get paths relative to this script
+SCRIPT_DIR = Path(__file__).parent
+PROJECT_ROOT = SCRIPT_DIR.parent
+DATA_CLEANED_PATH = PROJECT_ROOT / "data" / "cleaned" / "student_performance_cleaned.csv"
+CORRELATION_IMAGE_PATH = PROJECT_ROOT / "data" / "images" / "correlation_matrix.png"
+
+df = pd.read_csv(DATA_CLEANED_PATH)
 
 corr = df.corr(numeric_only=True)
 
@@ -16,7 +23,7 @@ sns.heatmap(corr, annot=True, cmap="coolwarm", fmt=".2f", square=True)
 plt.title("Correlation Matrix of Student Performance Features")
 
 # plt.tight_layout()
-plt.savefig("../data/images/correlation_matrix.png")
+plt.savefig(CORRELATION_IMAGE_PATH)
 
 plt.close()
 
