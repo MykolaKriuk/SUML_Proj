@@ -4,8 +4,15 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler, LabelEncoder
+from pathlib import Path
 
-df = pd.read_csv('../data/raw/StudentPerformanceFactors.csv')
+# Get paths relative to this script
+SCRIPT_DIR = Path(__file__).parent
+PROJECT_ROOT = SCRIPT_DIR.parent
+DATA_RAW_PATH = PROJECT_ROOT / "data" / "raw" / "StudentPerformanceFactors.csv"
+DATA_CLEANED_PATH = PROJECT_ROOT / "data" / "cleaned" / "student_performance_cleaned.csv"
+
+df = pd.read_csv(DATA_RAW_PATH)
 
 df.head()  # pierwszy rzut oka
 df.info()  # typy danych, liczba nie-null
@@ -39,13 +46,70 @@ binary_maps = {
 for col, mapping in binary_maps.items():
 	df[col] = df[col].map(mapping)
 
-# Label Encoding dla reszty
-label_enc = LabelEncoder()
-for col in cat_cols:
+# Label Encoding dla reszty (wykluczamy kolumny już przetworzone przez mapowanie binarne)
+# Exclude columns that were already binary encoded
+binary_cols = set(binary_maps.keys())
+remaining_cat_cols = [col for col in cat_cols if col not in binary_cols]
+
+# Create a new LabelEncoder for each column to avoid state overwriting
+for col in remaining_cat_cols:
+	label_enc = LabelEncoder()
 	df[col] = label_enc.fit_transform(df[col])
 
 print(df.head())
 print(df["Gender"])
 print(df["Motivation_Level"])
 
-df.to_csv("../data/cleaned/student_performance_cleaned.csv", index=False)
+df.to_csv(DATA_CLEANED_PATH, index=False)
+
+# Graphics generation
+IMAGES_DIR = PROJECT_ROOT / "data" / "images"
+CORRELATION_IMAGE_PATH = IMAGES_DIR / "correlation_matrix.png"
+TOP_CORRELATIONS_IMAGE_PATH = IMAGES_DIR / "top_correlations.png"
+EXAM_SCORE_DISTRIBUTION_IMAGE_PATH = IMAGES_DIR / "exam_score_distribution.png"
+
+# Ensure images directory exists
+IMAGES_DIR.mkdir(parents=True, exist_ok=True)
+
+# Correlation Matrix
+corr = df.corr(numeric_only=True)
+
+corr_unstacked = corr.abs().unstack().sort_values(ascending=False)
+print("\nTop correlated pairs:")
+print(corr_unstacked[(corr_unstacked < 1) & (corr_unstacked > 0.7)])
+
+plt.figure(figsize=(16, 12))
+sns.heatmap(corr, annot=True, cmap="coolwarm", fmt=".2f", square=True)
+plt.title("Correlation Matrix of Student Performance Features")
+plt.savefig(CORRELATION_IMAGE_PATH)
+plt.close()
+
+# Top Correlations with Exam Score
+if 'Exam_Score' in df.columns:
+    numeric_cols = df.select_dtypes(include=[np.number]).columns
+    correlations = df[numeric_cols].corr()['Exam_Score'].abs().sort_values(ascending=False)
+    correlations = correlations[correlations.index != 'Exam_Score']
+    
+    # Visualization of top correlations
+    fig, ax = plt.subplots(figsize=(10, 6))
+    top_10 = correlations.head(10)
+    ax.barh(range(len(top_10)), top_10.values)
+    ax.set_yticks(range(len(top_10)))
+    ax.set_yticklabels(top_10.index)
+    ax.set_xlabel('Absolute Correlation with Exam Score')
+    ax.set_title('Top 10 Features Correlated with Exam Score')
+    ax.invert_yaxis()
+    plt.tight_layout()
+    plt.savefig(TOP_CORRELATIONS_IMAGE_PATH)
+    plt.close()
+
+# Exam Score Distribution
+if 'Exam_Score' in df.columns:
+    fig, ax = plt.subplots(figsize=(10, 6))
+    ax.hist(df['Exam_Score'], bins=30, edgecolor='black', alpha=0.7)
+    ax.set_xlabel('Exam Score')
+    ax.set_ylabel('Frequency')
+    ax.set_title('Distribution of Exam Scores')
+    plt.tight_layout()
+    plt.savefig(EXAM_SCORE_DISTRIBUTION_IMAGE_PATH)
+    plt.close()

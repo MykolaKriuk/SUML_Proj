@@ -98,6 +98,7 @@ ENV/
 [Ll]ib64
 [Ll]ocal
 [Ss]cripts
+!scripts/
 pyvenv.cfg
 .venv
 pip-selfcheck.json
@@ -183,3 +184,4 @@ fabric.properties
 
 # idea folder, uncomment if you don't need it
 # .idea
+.idea/
