@@ -1,8 +1,6 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
 from pathlib import Path
 
 # Page configuration
@@ -19,6 +17,8 @@ PROJECT_ROOT = SCRIPT_DIR.parent.parent
 DATA_CLEANED_PATH = PROJECT_ROOT / "data" / "cleaned" / "student_performance_cleaned.csv"
 DATA_RAW_PATH = PROJECT_ROOT / "data" / "raw" / "StudentPerformanceFactors.csv"
 CORRELATION_IMAGE_PATH = PROJECT_ROOT / "data" / "images" / "correlation_matrix.png"
+TOP_CORRELATIONS_IMAGE_PATH = PROJECT_ROOT / "data" / "images" / "top_correlations.png"
+EXAM_SCORE_DISTRIBUTION_IMAGE_PATH = PROJECT_ROOT / "data" / "images" / "exam_score_distribution.png"
 
 # Kaggle dataset link
 KAGGLE_DATASET_URL = "https://www.kaggle.com/datasets/lainguyn123/student-performance-factors"
@@ -203,14 +203,10 @@ elif page == "🔍 Exploratory Data Analysis":
         This helps identify which features are most correlated with the target variable (Exam Score).
         """)
         
-        numeric_cols = df_cleaned.select_dtypes(include=[np.number]).columns
-        corr = df_cleaned[numeric_cols].corr()
-        
-        fig, ax = plt.subplots(figsize=(16, 12))
-        sns.heatmap(corr, annot=True, cmap="coolwarm", fmt=".2f", square=True, ax=ax)
-        ax.set_title("Correlation Matrix of Student Performance Features")
-        st.pyplot(fig)
-        plt.close()
+        if CORRELATION_IMAGE_PATH.exists():
+            st.image(str(CORRELATION_IMAGE_PATH), use_container_width=True)
+        else:
+            st.warning("Correlation matrix image not found. Please run 02_eda.py to generate it.")
         
         st.markdown("---")
         
@@ -228,16 +224,10 @@ elif page == "🔍 Exploratory Data Analysis":
             st.dataframe(top_corr_df.head(10), use_container_width=True)
             
             # Visualization of top correlations
-            fig, ax = plt.subplots(figsize=(10, 6))
-            top_10 = correlations.head(10)
-            ax.barh(range(len(top_10)), top_10.values)
-            ax.set_yticks(range(len(top_10)))
-            ax.set_yticklabels(top_10.index)
-            ax.set_xlabel('Absolute Correlation with Exam Score')
-            ax.set_title('Top 10 Features Correlated with Exam Score')
-            ax.invert_yaxis()
-            st.pyplot(fig)
-            plt.close()
+            if TOP_CORRELATIONS_IMAGE_PATH.exists():
+                st.image(str(TOP_CORRELATIONS_IMAGE_PATH), use_container_width=True)
+            else:
+                st.warning("Top correlations image not found. Please run 02_eda.py to generate it.")
         
         st.markdown("---")
         
@@ -246,13 +236,10 @@ elif page == "🔍 Exploratory Data Analysis":
         
         if 'Exam_Score' in df_cleaned.columns:
             # Exam Score distribution
-            fig, ax = plt.subplots(figsize=(10, 6))
-            ax.hist(df_cleaned['Exam_Score'], bins=30, edgecolor='black', alpha=0.7)
-            ax.set_xlabel('Exam Score')
-            ax.set_ylabel('Frequency')
-            ax.set_title('Distribution of Exam Scores')
-            st.pyplot(fig)
-            plt.close()
+            if EXAM_SCORE_DISTRIBUTION_IMAGE_PATH.exists():
+                st.image(str(EXAM_SCORE_DISTRIBUTION_IMAGE_PATH), use_container_width=True)
+            else:
+                st.warning("Exam score distribution image not found. Please run 02_eda.py to generate it.")
         
         # Additional distribution plots can be added here
         st.markdown("*Additional distribution plots will be added as EDA progresses.*")
