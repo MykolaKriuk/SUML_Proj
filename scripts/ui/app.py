@@ -390,33 +390,41 @@ elif page == "📊 Predictions":
         
         with col2:
             physical_activity = st.number_input("Physical Activity", min_value=0, max_value=10, value=3)
-            motivation_level = st.selectbox("Motivation Level", ["Low", "Medium", "High"], index=1)
+            motivation_level = st.selectbox("Motivation Level", ["High", "Low", "Medium"], index=2)
             internet_access = st.selectbox("Internet Access", ["Yes", "No"], index=0)
             extracurricular = st.selectbox("Extracurricular Activities", ["Yes", "No"], index=0)
             learning_disabilities = st.selectbox("Learning Disabilities", ["No", "Yes"], index=0)
         
         with col3:
             gender = st.selectbox("Gender", ["Male", "Female"], index=0)
-            parental_involvement = st.selectbox("Parental Involvement", ["Low", "Medium", "High"], index=1)
-            access_to_resources = st.number_input("Access to Resources", min_value=0, max_value=10, value=5)
-            peer_influence = st.number_input("Peer Influence", min_value=0, max_value=10, value=5)
-            family_income = st.number_input("Family Income", min_value=0, max_value=10, value=5)
+            parental_involvement = st.selectbox("Parental Involvement", ["High", "Low", "Medium"], index=2)
+            access_to_resources = st.selectbox("Access to Resources", ["High", "Low", "Medium"], index=2)
+            peer_influence = st.selectbox("Peer Influence", ["Negative", "Neutral", "Positive"], index=2)
+            family_income = st.selectbox("Family Income", ["High", "Low", "Medium"], index=2)
         
         col4, col5 = st.columns(2)
         with col4:
-            teacher_quality = st.number_input("Teacher Quality", min_value=0, max_value=10, value=5)
-            school_type = st.number_input("School Type", min_value=0, max_value=10, value=5)
+            teacher_quality = st.selectbox("Teacher Quality", ["High", "Low", "Medium"], index=2)
+            school_type = st.selectbox("School Type", ["Private", "Public"], index=1)
         with col5:
-            parental_education = st.number_input("Parental Education Level", min_value=0, max_value=10, value=5)
-            distance_from_home = st.number_input("Distance from Home", min_value=0, max_value=10, value=5)
+            parental_education = st.selectbox("Parental Education Level", ["College", "High School", "Postgraduate"], index=1)
+            distance_from_home = st.selectbox("Distance from Home", ["Far", "Moderate", "Near"], index=2)
         
         st.markdown("---")
         
         if st.button("🔮 Predict Exam Score", type="primary"):
-            motivation_map = {"Low": 0, "Medium": 1, "High": 2}
-            parental_map = {"Low": 0, "Medium": 1, "High": 2}
             gender_map = {"Male": 0, "Female": 1}
             yes_no_map = {"Yes": 1, "No": 0}
+            
+            motivation_map = {"High": 0, "Low": 1, "Medium": 2}
+            parental_map = {"High": 0, "Low": 1, "Medium": 2}
+            access_map = {"High": 0, "Low": 1, "Medium": 2}
+            income_map = {"High": 0, "Low": 1, "Medium": 2}
+            teacher_map = {"High": 0, "Low": 1, "Medium": 2}
+            school_map = {"Private": 0, "Public": 1}
+            peer_map = {"Negative": 0, "Neutral": 1, "Positive": 2}
+            education_map = {"College": 0, "High School": 1, "Postgraduate": 2}
+            distance_map = {"Far": 0, "Moderate": 1, "Near": 2}
             
             input_data = {
                 'Hours_Studied': hours_studied,
@@ -431,13 +439,13 @@ elif page == "📊 Predictions":
                 'Learning_Disabilities': yes_no_map[learning_disabilities],
                 'Gender': gender_map[gender],
                 'Parental_Involvement': parental_map[parental_involvement],
-                'Access_to_Resources': access_to_resources,
-                'Peer_Influence': peer_influence,
-                'Family_Income': family_income,
-                'Teacher_Quality': teacher_quality,
-                'School_Type': school_type,
-                'Parental_Education_Level': parental_education,
-                'Distance_from_Home': distance_from_home
+                'Access_to_Resources': access_map[access_to_resources],
+                'Peer_Influence': peer_map[peer_influence],
+                'Family_Income': income_map[family_income],
+                'Teacher_Quality': teacher_map[teacher_quality],
+                'School_Type': school_map[school_type],
+                'Parental_Education_Level': education_map[parental_education],
+                'Distance_from_Home': distance_map[distance_from_home]
             }
             
             try:
@@ -467,8 +475,7 @@ elif page == "📊 Predictions":
                 with col3:
                     st.metric("Model RMSE", f"{rmse:.4f}")
                 
-                st.info(f"**Interpretation**: Based on the input features, the predicted exam score is **{prediction:.2f}**. "
-                       f"The confidence range (±RMSE) is {lower_bound:.2f} to {upper_bound:.2f}.")
+            
                 
             except Exception as e:
                 st.error(f"Error making prediction: {e}")
