@@ -1,26 +1,180 @@
 {
   "features": [
-    "Hours_Studied",
+    "attendance_study_interaction",
     "Attendance",
-    "Parental_Involvement",
-    "Access_to_Resources",
-    "Extracurricular_Activities",
-    "Sleep_Hours",
-    "Previous_Scores",
-    "Motivation_Level",
-    "Internet_Access",
-    "Tutoring_Sessions",
-    "Family_Income",
-    "Teacher_Quality",
-    "School_Type",
-    "Peer_Influence",
-    "Physical_Activity",
-    "Learning_Disabilities",
-    "Parental_Education_Level",
-    "Distance_from_Home",
-    "Gender",
+    "Attendance_squared",
+    "effective_study_hours",
+    "previous_study_interaction",
+    "Hours_Studied",
+    "Hours_Studied_squared",
+    "study_hours_category",
+    "study_sleep_ratio",
     "study_efficiency",
-    "effective_study_hours"
+    "Previous_Scores",
+    "Previous_Scores_squared",
+    "Tutoring_Sessions",
+    "Peer_Influence",
+    "Learning_Disabilities",
+    "Access_to_Resources",
+    "Distance_from_Home",
+    "Parental_Involvement",
+    "Extracurricular_Activities",
+    "Internet_Access",
+    "school_quality_score",
+    "Teacher_Quality",
+    "Parental_Education_Level",
+    "parental_support_score",
+    "tutoring_study_ratio",
+    "Physical_Activity",
+    "Motivation_Level",
+    "Family_Income",
+    "School_Type",
+    "Sleep_Hours"
   ],
-  "target": "Exam_Score"
+  "target": "Exam_Score",
+  "best_params": {
+    "subsample": 0.8,
+    "reg_lambda": 0.5,
+    "reg_alpha": 0.1,
+    "num_leaves": 50,
+    "n_estimators": 500,
+    "min_child_samples": 20,
+    "max_depth": 3,
+    "learning_rate": 0.1,
+    "colsample_bytree": 1.0
+  },
+  "test_metrics": {
+    "mse": 0.18042597582496622,
+    "rmse": 0.42476578937688264,
+    "mae": 0.34461651922588465,
+    "r2": 0.982664725446001
+  },
+  "cv_metrics": {
+    "rmse_mean": 0.4422302646563384,
+    "rmse_std": 0.01063697578284731,
+    "r2_mean": 0.9814970386064792,
+    "r2_std": 0.00048070606740509747
+  },
+  "feature_importance": [
+    {
+      "feature": "Attendance",
+      "importance": 453
+    },
+    {
+      "feature": "attendance_study_interaction",
+      "importance": 339
+    },
+    {
+      "feature": "previous_study_interaction",
+      "importance": 282
+    },
+    {
+      "feature": "Previous_Scores",
+      "importance": 227
+    },
+    {
+      "feature": "Access_to_Resources",
+      "importance": 155
+    },
+    {
+      "feature": "Parental_Involvement",
+      "importance": 150
+    },
+    {
+      "feature": "Parental_Education_Level",
+      "importance": 144
+    },
+    {
+      "feature": "Physical_Activity",
+      "importance": 140
+    },
+    {
+      "feature": "effective_study_hours",
+      "importance": 140
+    },
+    {
+      "feature": "Tutoring_Sessions",
+      "importance": 125
+    },
+    {
+      "feature": "Distance_from_Home",
+      "importance": 121
+    },
+    {
+      "feature": "Family_Income",
+      "importance": 118
+    },
+    {
+      "feature": "Motivation_Level",
+      "importance": 114
+    },
+    {
+      "feature": "Hours_Studied",
+      "importance": 113
+    },
+    {
+      "feature": "tutoring_study_ratio",
+      "importance": 109
+    },
+    {
+      "feature": "Peer_Influence",
+      "importance": 103
+    },
+    {
+      "feature": "school_quality_score",
+      "importance": 91
+    },
+    {
+      "feature": "Learning_Disabilities",
+      "importance": 55
+    },
+    {
+      "feature": "study_efficiency",
+      "importance": 54
+    },
+    {
+      "feature": "Internet_Access",
+      "importance": 53
+    },
+    {
+      "feature": "Extracurricular_Activities",
+      "importance": 51
+    },
+    {
+      "feature": "Teacher_Quality",
+      "importance": 42
+    },
+    {
+      "feature": "study_sleep_ratio",
+      "importance": 42
+    },
+    {
+      "feature": "Sleep_Hours",
+      "importance": 38
+    },
+    {
+      "feature": "parental_support_score",
+      "importance": 29
+    },
+    {
+      "feature": "School_Type",
+      "importance": 5
+    },
+    {
+      "feature": "Attendance_squared",
+      "importance": 0
+    },
+    {
+      "feature": "Hours_Studied_squared",
+      "importance": 0
+    },
+    {
+      "feature": "Previous_Scores_squared",
+      "importance": 0
+    },
+    {
+      "feature": "study_hours_category",
+      "importance": 0
+    }
+  ]
 }
