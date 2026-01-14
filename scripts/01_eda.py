@@ -84,6 +84,14 @@ plt.title("Correlation Matrix of Student Performance Features")
 plt.savefig(CORRELATION_IMAGE_PATH)
 plt.close()
 
+# Highly correlated columns analysis
+threshold = 0.85
+corr_matrix = df.corr(numeric_only=True).abs()
+upper = corr_matrix.where(np.triu(np.ones(corr_matrix.shape), k=1).astype(bool))
+
+to_drop = [column for column in upper.columns if any(upper[column] > threshold)]
+print("\nHighly correlated columns to drop (threshold > 0.85):", to_drop)
+
 # Top Correlations with Exam Score
 if 'Exam_Score' in df.columns:
     numeric_cols = df.select_dtypes(include=[np.number]).columns
